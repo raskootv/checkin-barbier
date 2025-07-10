@@ -53,7 +53,7 @@
       }
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxn4EnE9GjGbtT1GrXDtpVUMF7_1NDOoSaFDs6gLs85ElLbaRuQSNteeNQDo6XFHRHXSg/exec?numero=" + encodeURIComponent(numero));
+        fetch("https://script.google.com/macros/s/AKfycbXYZ1234/exec?numero=" + encodeURIComponent(numero));
         const message = await response.text();
         resultDiv.innerText = message;
       } catch (error) {
