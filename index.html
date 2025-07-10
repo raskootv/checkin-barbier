@@ -53,7 +53,7 @@
       }
 
       try {
-        fetch("https://script.google.com/macros/s/AKfycbXYZ1234/exec?numero=" + encodeURIComponent(numero));
+        fetch("https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLhIgIQaILvbALhJpV2nKffXv5F2d5-KHlWqOfVSvaUrSqIb10WB7ojgHhrr_36uuXtqa56tXuRZCmqdGPMrmqhJGGbhhkjl3kT0_dldwpf7OPWo60tr_uswvJEVmZTFo1dWkPaFza6xtD5pKZYig21YZqW7DI9qovmcNFnWB4N7ub-9xm58lRk5KF4sPsu9vkNA6Agw1oMVrPgvqFYaRe1p69x2dFk-dUhHLaFPmLm8vnvS_WELmCOKaorVWVUAjWKBbKidb0ygLTdkDgqzsfSd5xTc4A&lib=MWPIaH1HS2uw6wY-txhR3VZ0QSSbc51eP/exec?numero=" + encodeURIComponent(numero));
         const message = await response.text();
         resultDiv.innerText = message;
       } catch (error) {
