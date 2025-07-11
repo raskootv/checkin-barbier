@@ -33,6 +33,11 @@
       font-weight: bold;
       color: #111827;
     }
+    #formulaire {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -40,12 +45,21 @@
   <p>Entrez votre numéro pour valider votre passage :</p>
   <input type="tel" id="numero" placeholder="ex : 0612345678">
   <button onclick="checkIn()">Valider ma visite</button>
+
+  <div id="formulaire">
+    <p>Nouvel utilisateur détecté. Merci de compléter vos informations :</p>
+    <input type="text" id="prenom" placeholder="Prénom">
+    <input type="email" id="email" placeholder="Email">
+    <button onclick="inscrireClient()">S'inscrire</button>
+  </div>
+
   <div id="result"></div>
 
   <script>
     async function checkIn() {
       const numero = document.getElementById('numero').value.trim();
       const resultDiv = document.getElementById('result');
+      const formulaire = document.getElementById('formulaire');
 
       if (!numero) {
         resultDiv.innerText = "❌ Merci d’entrer un numéro.";
@@ -53,11 +67,41 @@
       }
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwyuzrr-TGo32R1MXsvAfM1lCut6m7IVNefMJyYTe6C4mO07CdPEvHNLnDRTU_8IGGL8Q/exec?numero=" + encodeURIComponent(numero));
+        const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}`);
         const message = await response.text();
+
+        if (message.includes("Numéro inconnu")) {
+          formulaire.style.display = 'flex';
+        } else {
+          formulaire.style.display = 'none';
+        }
+
         resultDiv.innerText = message;
       } catch (error) {
+        console.error("Erreur attrapée :", error);
         resultDiv.innerText = "❌ Erreur de connexion.";
+      }
+    }
+
+    async function inscrireClient() {
+      const numero = document.getElementById('numero').value.trim();
+      const prenom = document.getElementById('prenom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const resultDiv = document.getElementById('result');
+
+      if (!numero || !prenom || !email) {
+        resultDiv.innerText = "❌ Merci de remplir tous les champs.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}&prenom=${encodeURIComponent(prenom)}&email=${encodeURIComponent(email)}`);
+        const message = await response.text();
+        resultDiv.innerText = message;
+        document.getElementById('formulaire').style.display = 'none';
+      } catch (error) {
+        console.error("Erreur lors de l'inscription :", error);
+        resultDiv.innerText = "❌ Erreur lors de l'inscription.";
       }
     }
   </script>
