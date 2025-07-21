@@ -16,6 +16,9 @@ export default async function handler(req, res) {
   try {
     const response = await fetch(`${scriptUrl}?${params.toString()}`);
     const text = await response.text();
+
+    console.log("[Apps Script]:", text);
+
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(200).send(text);
   } catch (err) {
