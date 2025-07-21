@@ -28,7 +28,7 @@
       border: none;
       cursor: pointer;
     }
-    #result {
+    #result, #loading {
       margin-top: 2em;
       font-weight: bold;
       color: #111827;
@@ -53,6 +53,7 @@
     <button onclick="inscrireClient()">S'inscrire</button>
   </div>
 
+  <div id="loading" style="display: none;">⏳ Chargement...</div>
   <div id="result"></div>
 
   <script>
@@ -60,27 +61,26 @@
       const numero = document.getElementById('numero').value.trim();
       const resultDiv = document.getElementById('result');
       const formulaire = document.getElementById('formulaire');
+      const loading = document.getElementById('loading');
 
       if (!numero) {
         resultDiv.innerText = "❌ Merci d’entrer un numéro.";
         return;
       }
 
+      loading.style.display = 'block';
+      resultDiv.innerText = "";
+
       try {
         const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}`);
         const message = await response.text();
-
-        if (message.includes("Numéro inconnu")) {
-          formulaire.style.display = 'flex';
-        } else {
-          formulaire.style.display = 'none';
-        }
-
         resultDiv.innerText = message;
+        formulaire.style.display = message.includes("Numéro inconnu") ? 'flex' : 'none';
       } catch (error) {
-        console.error("Erreur attrapée :", error);
         resultDiv.innerText = "❌ Erreur de connexion.";
       }
+
+      loading.style.display = 'none';
     }
 
     async function inscrireClient() {
@@ -88,11 +88,15 @@
       const prenom = document.getElementById('prenom').value.trim();
       const email = document.getElementById('email').value.trim();
       const resultDiv = document.getElementById('result');
+      const loading = document.getElementById('loading');
 
       if (!numero || !prenom || !email) {
         resultDiv.innerText = "❌ Merci de remplir tous les champs.";
         return;
       }
+
+      loading.style.display = 'block';
+      resultDiv.innerText = "";
 
       try {
         const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}&prenom=${encodeURIComponent(prenom)}&email=${encodeURIComponent(email)}`);
@@ -100,9 +104,10 @@
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
       } catch (error) {
-        console.error("Erreur lors de l'inscription :", error);
         resultDiv.innerText = "❌ Erreur lors de l'inscription.";
       }
+
+      loading.style.display = 'none';
     }
   </script>
 </body>
