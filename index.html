@@ -72,7 +72,14 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}`);
+        const response = await fetch("/api/checkin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ numero, prenom, email })
+        });
+
         const message = await response.text();
         resultDiv.innerText = message;
         formulaire.style.display = message.includes("Numéro inconnu") ? 'flex' : 'none';
