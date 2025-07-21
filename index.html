@@ -73,12 +73,7 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch("/api/checkin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ numero })
-        });
-
+        const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}`);
         const message = await response.text();
         resultDiv.innerText = message;
 
@@ -108,12 +103,8 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch("/api/checkin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ numero, prenom, email })
-        });
-
+        const url = `/api/checkin?numero=${encodeURIComponent(numero)}&prenom=${encodeURIComponent(prenom)}&email=${encodeURIComponent(email)}`;
+        const response = await fetch(url);
         const message = await response.text();
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
