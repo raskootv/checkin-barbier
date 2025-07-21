@@ -69,20 +69,22 @@
       }
 
       loading.style.display = 'block';
+      formulaire.style.display = 'none';
       resultDiv.innerText = "";
 
       try {
         const response = await fetch("/api/checkin", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ numero, prenom, email })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ numero })
         });
 
         const message = await response.text();
         resultDiv.innerText = message;
-        formulaire.style.display = message.includes("Numéro inconnu") ? 'flex' : 'none';
+
+        if (message.includes("Numéro inconnu")) {
+          formulaire.style.display = 'flex';
+        }
       } catch (error) {
         resultDiv.innerText = "❌ Erreur de connexion.";
       }
@@ -106,7 +108,12 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}&prenom=${encodeURIComponent(prenom)}&email=${encodeURIComponent(email)}`);
+        const response = await fetch("/api/checkin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ numero, prenom, email })
+        });
+
         const message = await response.text();
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
