@@ -1,9 +1,8 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Barbier - Enregistrement Client</title>
+  <title>Barbier - Check-in Client</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -11,11 +10,13 @@
       font-family: 'Inter', sans-serif;
       background: linear-gradient(145deg, #f4f4f4, #e0e0e0);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       padding: 2rem;
       min-height: 100vh;
     }
+
     .card {
       background: white;
       padding: 2rem;
@@ -24,6 +25,18 @@
       width: 100%;
       max-width: 400px;
     }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #555;
+    }
+
     input, button {
       width: 100%;
       margin-top: 1rem;
@@ -32,6 +45,7 @@
       border-radius: 0.5rem;
       border: 1px solid #ccc;
     }
+
     button {
       background: #3B82F6;
       color: white;
@@ -39,13 +53,20 @@
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       background: #2563EB;
     }
-    #formulaire { display: none; flex-direction: column; }
+
+    #formulaire {
+      display: none;
+      flex-direction: column;
+    }
+
     #result, #loading {
       margin-top: 1rem;
       font-weight: bold;
+      color: #1F2937;
       text-align: center;
     }
   </style>
@@ -64,13 +85,12 @@
       <button onclick="inscrireClient()">S'inscrire</button>
     </div>
 
-    <div id="loading" style="display:none;">⏳ Chargement...</div>
+    <div id="loading" style="display: none;">⏳ Chargement...</div>
     <div id="result"></div>
   </div>
 
   <script>
-    const SUPABASE_FUNCTION_URL = "https://odrgqvseddbbvvywguml.supabase.co/functions/v1/checkin";
-    const SUPABASE_ANON_KEY = "🔑TA_VRAIE_CLE_ANON_ICI🔑";
+    const API_URL = "/api/checkin";
 
     async function checkIn() {
       const numero = document.getElementById('numero').value.trim();
@@ -88,12 +108,9 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch(SUPABASE_FUNCTION_URL, {
+        const response = await fetch(API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ numero })
         });
 
@@ -103,7 +120,7 @@
         if (message.includes("Numéro inconnu")) {
           formulaire.style.display = 'flex';
         }
-      } catch (err) {
+      } catch (error) {
         resultDiv.innerText = "❌ Erreur de connexion.";
       }
 
@@ -126,19 +143,16 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch(SUPABASE_FUNCTION_URL, {
+        const response = await fetch(API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ numero, prenom, email })
         });
 
         const message = await response.text();
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
-      } catch (err) {
+      } catch (error) {
         resultDiv.innerText = "❌ Erreur lors de l'inscription.";
       }
 
