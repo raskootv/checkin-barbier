@@ -142,9 +142,12 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch("/api/checkin", {
+        const response = await fetch("https://odrgqvseddbbvvywguml.supabase.co/functions/v1/checkin", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer TON_SUPABASE_ANON_KEY"
+          },
           body: JSON.stringify({ numero, prenom, email })
         });
 
