@@ -1,5 +1,5 @@
 // checkin.js
-const SUPABASE_URL = "https://odrgqvseddbbvvywguml.supabase.co/functions/v1/checkin";
+const SUPABASE_URL = "https://odrgqvseddbbvvywguml.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kcmdxdnNlZGRiYnZ2eXdndW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyMTI4MzQsImV4cCI6MjA2ODc4ODgzNH0.zbWnDGbsdhY6u_YUs_2cLmN3UxtLp9oPn8l89iLWUyE";
 const FUNCTION_URL = "https://odrgqvseddbbvvywguml.supabase.co/functions/v1/checkin";
 
