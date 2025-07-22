@@ -2,59 +2,93 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Check-in Barbier</title>
+  <title>Barbier - Enregistrement Client</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #f7f7f7;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #f4f4f4, #e0e0e0);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2em;
+      justify-content: center;
+      padding: 2rem;
+      min-height: 100vh;
     }
-    input, button {
-      padding: 1em;
-      font-size: 1em;
-      margin-top: 1em;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 300px;
-      border-radius: 5px;
+      max-width: 400px;
+    }
+
+    input, button {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
       border: 1px solid #ccc;
     }
+
     button {
-      background-color: #3B82F6;
+      background: #3B82F6;
       color: white;
+      font-weight: 600;
       border: none;
       cursor: pointer;
     }
-    #result, #loading {
-      margin-top: 2em;
-      font-weight: bold;
-      color: #111827;
+
+    button:hover {
+      background: #2563EB;
     }
+
     #formulaire {
       display: none;
       flex-direction: column;
-      align-items: center;
+    }
+
+    #result, #loading {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #1F2937;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h2>Bienvenue 👋</h2>
-  <p>Entrez votre numéro pour valider votre passage :</p>
-  <input type="tel" id="numero" placeholder="ex : 0612345678">
-  <button onclick="checkIn()">Valider ma visite</button>
+  <div class="card">
+    <h1>Bienvenue chez votre Barbier</h1>
+    <p>Validez votre passage ou inscrivez-vous</p>
 
-  <div id="formulaire">
-    <p>Nouvel utilisateur détecté. Merci de compléter vos informations :</p>
-    <input type="text" id="prenom" placeholder="Prénom">
-    <input type="email" id="email" placeholder="Email">
-    <button onclick="inscrireClient()">S'inscrire</button>
+    <input type="tel" id="numero" placeholder="📱 Numéro de téléphone">
+    <button onclick="checkIn()">Valider ma visite</button>
+
+    <div id="formulaire">
+      <input type="text" id="prenom" placeholder="🧍‍♂️ Prénom">
+      <input type="email" id="email" placeholder="📧 Email">
+      <button onclick="inscrireClient()">S'inscrire</button>
+    </div>
+
+    <div id="loading" style="display: none;">⏳ Chargement...</div>
+    <div id="result"></div>
   </div>
-
-  <div id="loading" style="display: none;">⏳ Chargement...</div>
-  <div id="result"></div>
 
   <script>
     async function checkIn() {
@@ -73,7 +107,12 @@
       resultDiv.innerText = "";
 
       try {
-        const response = await fetch(`/api/checkin?numero=${encodeURIComponent(numero)}`);
+        const response = await fetch("/api/checkin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ numero })
+        });
+
         const message = await response.text();
         resultDiv.innerText = message;
 
@@ -103,8 +142,12 @@
       resultDiv.innerText = "";
 
       try {
-        const url = `/api/checkin?numero=${encodeURIComponent(numero)}&prenom=${encodeURIComponent(prenom)}&email=${encodeURIComponent(email)}`;
-        const response = await fetch(url);
+        const response = await fetch("/api/checkin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ numero, prenom, email })
+        });
+
         const message = await response.text();
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
