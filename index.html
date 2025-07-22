@@ -146,7 +146,7 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer TON_SUPABASE_ANON_KEY"
+            "Authorization": "Bearer ${process.env.SUPABASE_ANON_KEY}"
           },
           body: JSON.stringify({ numero, prenom, email })
         });
