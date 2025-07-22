@@ -19,7 +19,7 @@ async function checkIn() {
   resultDiv.innerText = "";
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/checkin`, {
+    const response = await fetch(FUNCTION_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
