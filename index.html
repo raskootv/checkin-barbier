@@ -46,7 +46,8 @@
       height: 60px;
       border-radius: 9999px;
       margin: 0 auto 1rem;
-      background: url('/logo.png') no-repeat center/cover;
+      object-fit: cover;
+      display: block;
     }
 
     h1 {
@@ -111,7 +112,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo"></div>
+    <img src="/logo.png" alt="Logo Sixty Five" class="logo">
     <h1>Bienvenue chez Sixty Five</h1>
     <p id="description">Validez votre passage ou inscrivez-vous à notre programme de fidélité</p>
 
