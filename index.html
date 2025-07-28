@@ -2,60 +2,88 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Barbier - Check-in Client</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sixty Five - Check-in Client</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #facc15;
+      --primary-dark: #eab308;
+      --bg: #0f0f0f;
+      --card-bg: #1c1c1c;
+      --text: #ffffff;
+      --text-muted: #a1a1aa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      padding: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(145deg, #f4f4f4, #e0e0e0);
+      background: linear-gradient(135deg, #0c0c0c, #1a1a1a);
+      color: var(--text);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
       min-height: 100vh;
     }
 
-    .card {
-      background: white;
+    .container {
+      background: var(--card-bg);
       padding: 2rem;
       border-radius: 1rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
       max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 9999px;
+      margin: 0 auto 1rem;
+      background: url('/logo.png') no-repeat center/cover;
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 1.5rem;
       margin-bottom: 0.5rem;
-      color: #111;
     }
 
     p {
-      font-size: 1rem;
-      color: #555;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
     }
 
     input, button {
       width: 100%;
-      margin-top: 1rem;
-      padding: 0.8rem;
-      font-size: 1rem;
+      padding: 0.9rem;
+      margin-top: 0.75rem;
       border-radius: 0.5rem;
-      border: 1px solid #ccc;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+    }
+
+    input {
+      background: #2c2c2c;
+      color: var(--text);
     }
 
     button {
-      background: #3B82F6;
-      color: white;
+      background: var(--primary);
+      color: #000;
       font-weight: 600;
-      border: none;
       cursor: pointer;
     }
 
     button:hover {
-      background: #2563EB;
+      background: var(--primary-dark);
     }
 
     #formulaire {
@@ -66,31 +94,52 @@
     #result, #loading {
       margin-top: 1rem;
       font-weight: bold;
-      color: #1F2937;
       text-align: center;
+    }
+
+    .review-box {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .review-box a {
+      color: var(--primary);
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Bienvenue chez votre Barbier</h1>
-    <p>Validez votre passage ou inscrivez-vous</p>
+  <div class="container">
+    <div class="logo"></div>
+    <h1>Bienvenue chez Sixty Five</h1>
+    <p>Validez votre passage ou inscrivez-vous à notre programme de fidélité</p>
 
-    <input type="tel" id="numero" placeholder="📱 Numéro de téléphone">
+    <input type="tel" id="numero" placeholder="Numéro de téléphone">
     <button onclick="checkIn()">Valider ma visite</button>
 
     <div id="formulaire">
-      <input type="text" id="prenom" placeholder="🧍‍♂️ Prénom">
-      <input type="email" id="email" placeholder="📧 Email">
+      <input type="text" id="prenom" placeholder="Prénom">
+      <input type="email" id="email" placeholder="Email">
       <button onclick="inscrireClient()">S'inscrire</button>
     </div>
 
-    <div id="loading" style="display: none;">⏳ Chargement...</div>
+    <div id="loading" style="display:none;">⏳ Chargement...</div>
     <div id="result"></div>
+
+    <div class="review-box">
+      Vous avez aimé votre expérience ? <a href="https://share.google/eS4hHuBINxkCpoQsx" target="_blank">Laissez-nous un avis Google ⭐</a>
+    </div>
   </div>
 
   <script>
     const API_URL = "/api/checkin";
+
+    window.onload = () => {
+      document.getElementById('numero').value = '';
+      document.getElementById('prenom').value = '';
+      document.getElementById('email').value = '';
+    }
 
     async function checkIn() {
       const numero = document.getElementById('numero').value.trim();
@@ -98,14 +147,11 @@
       const formulaire = document.getElementById('formulaire');
       const loading = document.getElementById('loading');
 
-      if (!numero) {
-        resultDiv.innerText = "❌ Merci d’entrer un numéro.";
-        return;
-      }
+      resultDiv.innerText = '';
+      if (!numero) return resultDiv.innerText = "❌ Merci d’entrer un numéro.";
 
       loading.style.display = 'block';
       formulaire.style.display = 'none';
-      resultDiv.innerText = "";
 
       try {
         const response = await fetch(API_URL, {
@@ -116,11 +162,12 @@
 
         const message = await response.text();
         resultDiv.innerText = message;
+        document.getElementById('numero').value = '';
 
         if (message.includes("Numéro inconnu")) {
           formulaire.style.display = 'flex';
         }
-      } catch (error) {
+      } catch {
         resultDiv.innerText = "❌ Erreur de connexion.";
       }
 
@@ -134,13 +181,10 @@
       const resultDiv = document.getElementById('result');
       const loading = document.getElementById('loading');
 
-      if (!numero || !prenom || !email) {
-        resultDiv.innerText = "❌ Merci de remplir tous les champs.";
-        return;
-      }
+      resultDiv.innerText = '';
+      if (!numero || !prenom || !email) return resultDiv.innerText = "❌ Merci de remplir tous les champs.";
 
       loading.style.display = 'block';
-      resultDiv.innerText = "";
 
       try {
         const response = await fetch(API_URL, {
@@ -152,7 +196,10 @@
         const message = await response.text();
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
-      } catch (error) {
+        document.getElementById('numero').value = '';
+        document.getElementById('prenom').value = '';
+        document.getElementById('email').value = '';
+      } catch {
         resultDiv.innerText = "❌ Erreur lors de l'inscription.";
       }
 
