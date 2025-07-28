@@ -137,6 +137,11 @@
   <script>
     const API_URL = "/api/checkin";
 
+    function nettoyerNumero(input) {
+      let n = input.replace(/\s+/g, '').replace(/^\+33/, '0');
+      return n;
+    }
+
     window.onload = () => {
       document.getElementById('numero').value = '';
       document.getElementById('prenom').value = '';
@@ -144,7 +149,8 @@
     }
 
     async function checkIn() {
-      const numero = document.getElementById('numero').value.trim();
+      const brut = document.getElementById('numero').value.trim();
+      const numero = nettoyerNumero(brut);
       const resultDiv = document.getElementById('result');
       const formulaire = document.getElementById('formulaire');
       const loading = document.getElementById('loading');
@@ -170,12 +176,12 @@
           return date.toLocaleDateString('fr-FR');
         });
 
-        resultDiv.innerText = message;
-
         if (message.includes("Numéro inconnu")) {
+          resultDiv.innerText = "📞 Nouveau ici ? Inscrivez-vous en 10 secondes.";
           formulaire.style.display = 'flex';
           document.getElementById('numero').readOnly = true;
         } else {
+          resultDiv.innerText = message;
           checkinSection.style.display = 'none';
           description.innerText = "Merci pour votre visite et votre fidélité !";
         }
@@ -187,7 +193,8 @@
     }
 
     async function inscrireClient() {
-      const numero = document.getElementById('numero').value.trim();
+      const brut = document.getElementById('numero').value.trim();
+      const numero = nettoyerNumero(brut);
       const prenom = document.getElementById('prenom').value.trim();
       const email = document.getElementById('email').value.trim();
       const resultDiv = document.getElementById('result');
@@ -218,7 +225,6 @@
         document.getElementById('prenom').value = '';
         document.getElementById('email').value = '';
 
-        // Maintenant on masque aussi l’entrée numéro + bouton, et affiche message de confirmation
         checkinSection.style.display = 'none';
         description.innerText = "Merci pour votre inscription et votre visite !";
         document.getElementById('numero').readOnly = false;
