@@ -113,10 +113,12 @@
   <div class="container">
     <div class="logo"></div>
     <h1>Bienvenue chez Sixty Five</h1>
-    <p>Validez votre passage ou inscrivez-vous à notre programme de fidélité</p>
+    <p id="description">Validez votre passage ou inscrivez-vous à notre programme de fidélité</p>
 
-    <input type="tel" id="numero" placeholder="Numéro de téléphone">
-    <button onclick="checkIn()">Valider ma visite</button>
+    <div id="checkin-section">
+      <input type="tel" id="numero" placeholder="Numéro de téléphone">
+      <button onclick="checkIn()">Valider ma visite</button>
+    </div>
 
     <div id="formulaire">
       <input type="text" id="prenom" placeholder="Prénom">
@@ -146,6 +148,8 @@
       const resultDiv = document.getElementById('result');
       const formulaire = document.getElementById('formulaire');
       const loading = document.getElementById('loading');
+      const checkinSection = document.getElementById('checkin-section');
+      const description = document.getElementById('description');
 
       resultDiv.innerText = '';
       if (!numero) return resultDiv.innerText = "❌ Merci d’entrer un numéro.";
@@ -160,12 +164,20 @@
           body: JSON.stringify({ numero })
         });
 
-        const message = await response.text();
+        let message = await response.text();
+        message = message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, m, d, y) => {
+          const date = new Date(`${y}-${m}-${d}`);
+          return date.toLocaleDateString('fr-FR');
+        });
+
         resultDiv.innerText = message;
-        document.getElementById('numero').value = '';
 
         if (message.includes("Numéro inconnu")) {
           formulaire.style.display = 'flex';
+          document.getElementById('numero').readOnly = true;
+        } else {
+          checkinSection.style.display = 'none';
+          description.innerText = "Merci pour votre visite et votre fidélité !";
         }
       } catch {
         resultDiv.innerText = "❌ Erreur de connexion.";
@@ -180,6 +192,8 @@
       const email = document.getElementById('email').value.trim();
       const resultDiv = document.getElementById('result');
       const loading = document.getElementById('loading');
+      const checkinSection = document.getElementById('checkin-section');
+      const description = document.getElementById('description');
 
       resultDiv.innerText = '';
       if (!numero || !prenom || !email) return resultDiv.innerText = "❌ Merci de remplir tous les champs.";
@@ -193,12 +207,21 @@
           body: JSON.stringify({ numero, prenom, email })
         });
 
-        const message = await response.text();
+        let message = await response.text();
+        message = message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, m, d, y) => {
+          const date = new Date(`${y}-${m}-${d}`);
+          return date.toLocaleDateString('fr-FR');
+        });
+
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
-        document.getElementById('numero').value = '';
         document.getElementById('prenom').value = '';
         document.getElementById('email').value = '';
+
+        // Maintenant on masque aussi l’entrée numéro + bouton, et affiche message de confirmation
+        checkinSection.style.display = 'none';
+        description.innerText = "Merci pour votre inscription et votre visite !";
+        document.getElementById('numero').readOnly = false;
       } catch {
         resultDiv.innerText = "❌ Erreur lors de l'inscription.";
       }
