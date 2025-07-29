@@ -143,8 +143,15 @@
     const API_URL = "/api/checkin";
 
     function nettoyerNumero(input) {
-      let n = input.replace(/\s+/g, '').replace(/^\+33/, '0');
-      return n;
+      return input.replace(/\s+/g, '').replace(/^\+33/, '0');
+    }
+
+    function estNumeroValide(numero) {
+      return /^0\d{9}$/.test(numero);
+    }
+
+    function estEmailValide(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
     window.onload = () => {
@@ -163,7 +170,7 @@
       const description = document.getElementById('description');
 
       resultDiv.innerText = '';
-      if (!numero) return resultDiv.innerText = "❌ Merci d’entrer un numéro.";
+      if (!numero || !estNumeroValide(numero)) return resultDiv.innerText = "❌ Numéro invalide. Entrez 10 chiffres.";
 
       loading.style.display = 'block';
       formulaire.style.display = 'none';
@@ -210,6 +217,8 @@
 
       resultDiv.innerText = '';
       if (!numero || !prenom || !email) return resultDiv.innerText = "❌ Merci de remplir tous les champs.";
+      if (!estNumeroValide(numero)) return resultDiv.innerText = "❌ Numéro invalide. Entrez 10 chiffres.";
+      if (!estEmailValide(email)) return resultDiv.innerText = "❌ Adresse e-mail invalide.";
 
       loading.style.display = 'block';
 
@@ -221,9 +230,10 @@
         });
 
         let message = await response.text();
-        message = message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, m, d, y) => {
-          const date = new Date(`${y}-${m}-${d}`);
-          return date.toLocaleDateString('fr-FR');
+        message = message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, d, m, y) => {
+          const iso = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+          const date = new Date(iso);
+          return isNaN(date.getTime()) ? match : date.toLocaleDateString('fr-FR');
         });
 
         resultDiv.innerText = message;
