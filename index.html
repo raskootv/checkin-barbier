@@ -156,7 +156,8 @@
 
     function convertirDateFR(message) {
       return message.replace(/\b(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}:\d{2}\.\d{3}Z\b/g, (match, y, m, d) => {
-        return `${d}/${m}/${y}`;
+        const date = new Date(`${y}-${m}-${d}`);
+        return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
       });
     }
 
