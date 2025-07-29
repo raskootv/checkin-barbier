@@ -154,6 +154,18 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
+    function convertirDateFR(message) {
+      return message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, d, m, y) => {
+        const iso = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        const date = new Date(iso + 'T00:00:00Z');
+        return isNaN(date.getTime()) ? match : date.toLocaleString('fr-FR', {
+          timeZone: 'Europe/Paris',
+          dateStyle: 'short',
+          timeStyle: 'short'
+        });
+      });
+    }
+
     window.onload = () => {
       document.getElementById('numero').value = '';
       document.getElementById('prenom').value = '';
@@ -183,11 +195,7 @@
         });
 
         let message = await response.text();
-        message = message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, d, m, y) => {
-          const iso = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-          const date = new Date(iso);
-          return isNaN(date.getTime()) ? match : date.toLocaleDateString('fr-FR');
-        });
+        message = convertirDateFR(message);
 
         if (message.includes("Numéro inconnu")) {
           resultDiv.innerText = "📞 Nouveau ici ? Inscrivez-vous en 10 secondes.";
@@ -230,11 +238,7 @@
         });
 
         let message = await response.text();
-        message = message.replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/g, (match, d, m, y) => {
-          const iso = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-          const date = new Date(iso);
-          return isNaN(date.getTime()) ? match : date.toLocaleDateString('fr-FR');
-        });
+        message = convertirDateFR(message);
 
         resultDiv.innerText = message;
         document.getElementById('formulaire').style.display = 'none';
