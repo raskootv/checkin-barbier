@@ -135,7 +135,7 @@
     <div id="result"></div>
 
     <div class="review-box">
-      Vous avez aimé votre expérience ? <a href="https://search.google.com/local/writereview?placeid=ChIJVVW5j2Fv5kcRqu0FupoYkX4" target="_blank">Laissez-nous un avis Google ⭐</a>
+      Vous avez aimé votre expérience ? <a href="https://www.google.com/maps/place/?q=place_id:ChIJVVW5j2Fv5kcRqu0FupoYkX4" target="_blank">Laissez-nous un avis Google ⭐</a>
     </div>
   </div>
 
@@ -156,7 +156,7 @@
 
     function convertirDateFR(message) {
       return message.replace(/\b(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}:\d{2}\.\d{3}Z\b/g, (match, y, m, d) => {
-        const date = new Date(`${y}-${m}-${d}`);
+        const date = new Date(`${y}-${m}-${d}T00:00:00Z`);
         return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
       });
     }
