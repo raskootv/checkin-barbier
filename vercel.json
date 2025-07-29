@@ -3,7 +3,9 @@
     "cleanUrls": true,
     "rewrites": [
       { "source": "/api/(.*)", "destination": "/api/checkin.js" },
-      { "source": "/(.*)", "destination": "/index.html" }
+      {
+        "source": "/((?!logo\\.png|favicon\\.ico|api).*)",
+        "destination": "/index.html"
+      }
     ]
   }
-  
